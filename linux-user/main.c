@@ -4811,6 +4811,7 @@ int main(int argc, char **argv, char **envp)
         gdb_handlesig(cpu, 0);
     }
     trace_init_vcpu_events();
+    /*This is homework*/
     cpu_loop(env);
     /* never exits */
     return 0;
