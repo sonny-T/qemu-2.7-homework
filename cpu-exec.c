@@ -205,7 +205,7 @@ static inline tcg_target_ulong cpu_tb_exec(CPUState *cpu, TranslationBlock *itb)
      *  SHADOW STACK module */
     if(cas_shadowstack && itb->RETFlag){
     	if(tmpcpu->env.eip != 0){
-    	    fprintf(stderr,"attacked!\n");
+    	    fprintf(stderr,"program is attacked!\n");
     	}
     	tmpcpu->env.eip = ShadowStackPop();
         //printf("Pop stack---------------------------- %lx\n",tmpcpu->env.eip);
@@ -421,7 +421,7 @@ static inline TranslationBlock *tb_find_fast(CPUState *cpu,
 #endif
     /* See if we can patch the calling TB. */
     if (*last_tb && !qemu_loglevel_mask(CPU_LOG_TB_NOCHAIN)) {
-        tb_add_jump(*last_tb, tb_exit, tb);
+        //tb_add_jump(*last_tb, tb_exit, tb);
     }
     tb_unlock();
 
@@ -430,8 +430,8 @@ static inline TranslationBlock *tb_find_fast(CPUState *cpu,
     if(cas_shadowstack){
 	if(tb->CALLFlag == 1){
 	    ShadowStackPush(tb->next_insn);
-	    //printf("Push stack****************************** %lx  next pc %lx\n"
-	    //		,tb->next_insn,env->tpush_reg);
+	   // printf("Push stack****************************** next pc %lx\n"
+	    //		,tb->next_insn);
 	}
     }
 

@@ -6281,7 +6281,7 @@ static target_ulong disas_insn(CPUX86State *env, DisasContext *s,
         /************************/
         /* control */
     case 0xc2: /* ret im */
-    	/* QEMU-HOMEWORK -ss command options, SHADOW module 
+    	/* QEMU-HOMEWORK -ss command options, SHADOW STACK module 
 	 * mark ret instruction for basic block 'tb'*/
     	if(cas_shadowstack){
     		s->have_stackret = 1;
@@ -6296,7 +6296,7 @@ static target_ulong disas_insn(CPUX86State *env, DisasContext *s,
         gen_eob(s);
         break;
     case 0xc3: /* ret */
-    	/* QEMU-HOMEWORK -ss command options, SHADOW module  */
+    	/* QEMU-HOMEWORK -ss command options, SHADOW STACK module  */
     	if(cas_shadowstack){
     		s->have_stackret = 1;
     	}
