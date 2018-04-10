@@ -205,12 +205,13 @@ static inline tcg_target_ulong cpu_tb_exec(CPUState *cpu, TranslationBlock *itb)
      *  SHADOW STACK module */
     if(cas_shadowstack && itb->RETFlag){
 	pc_var = ShadowStackPop();
-    	//if(tmpcpu->env.eip != 0){
-    	 //   fprintf(stderr,"program is attacked!\n");
-    	//}
-    	//tmpcpu->env.eip = pc_var;
+
+	    /************************************
+	     *
+	     *               TODO...	
+	     *	
+	     ************************************/
 	assert(tmpcpu->env.eip == pc_var);
-        //printf("Pop stack---------------------------- %lx\n",tmpcpu->env.eip);
         }
     return ret;
 }
@@ -431,8 +432,6 @@ static inline TranslationBlock *tb_find_fast(CPUState *cpu,
      * SHADOW STACK module function */
     if(cas_shadowstack){
 	if(tb->CALLFlag == 1){
-	    //ShadowStackPush(tb->next_insn);
-	   //printf("Push stack****************************** next pc %lx\n",tb->next_insn);
 	    /************************************
 	     *
 	     *               TODO...	

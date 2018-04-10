@@ -4874,7 +4874,11 @@ static target_ulong disas_insn(CPUX86State *env, DisasContext *s,
 	    * write '0' into the orignal stack */
             if(cas_shadowstack){
             	s->have_stackcall = 1;
-		//next_eip = 0;
+	    /************************************
+	     *
+	     *               TODO...	
+	     *	
+	     ************************************/
 		assert(next_eip==0);
             	tcg_gen_movi_tl(cpu_T1, next_eip);
             }
@@ -6376,7 +6380,11 @@ static target_ulong disas_insn(CPUX86State *env, DisasContext *s,
 	     * write '0' into the orignal stack */
             if(cas_shadowstack){
             	s->have_stackcall = 1;
-		//next_eip = 0;
+	    /************************************
+	     *
+	     *               TODO...	
+	     *	
+	     ************************************/
 		assert(next_eip==0);
             	tcg_gen_movi_tl(cpu_T0, next_eip);
             }
