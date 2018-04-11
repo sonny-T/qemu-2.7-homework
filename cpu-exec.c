@@ -149,15 +149,15 @@ static inline void grin_handle_jmp(target_ulong pc,target_ulong jmpaddr_of)
 	int i = 0;
 	char c;
 
-	if(coarsecfi_enabled || finecfi_enabled){
-		if((pfile=fopen(jpath_buff,"r"))==NULL){
+	if(coarsecfi_enabled){
+		if((pfile=fopen("/home/sonny","r"))==NULL){
 			printf("Read file failed!\n");
 			printf("** File path should less than 100 bytes.\n"
 					"** File path doesn't exist.\n");
 			exit(0);
 		}
 	}
-	while(coarsecfi_enabled || finecfi_enabled)
+	while(coarsecfi_enabled )
 	{
 		fgets(bufLine,30,pfile);
 		for(i=0,str1=bufLine;i<2;i++,str1=NULL){
@@ -198,7 +198,7 @@ static inline void grin_handle_jmp(target_ulong pc,target_ulong jmpaddr_of)
 nextline:
 		continue;
 	}
-	if(coarsecfi_enabled || finecfi_enabled){
+	if(coarsecfi_enabled){
 		fclose(pfile);
 		if(dcount<=5 && jmpaddr_of<0x4000000000){
 			fprintf(stderr,"\nGadget code icount: %d!\n",dcount);
@@ -214,10 +214,7 @@ nextline:
 		}
 	}
 	else{
-#if !NOSTDERR
-	fprintf(stderr,"JMP  d: %#lx  s: %#lx icount: %ld\n",
-													pc,jmpaddr_of,dcount);
-#endif
+	fprintf(stderr,"JMP  d: %#lx  s: %#lx icount: %ld\n",pc,jmpaddr_of,dcount);
 	}
     dcount = 0;
 }
@@ -233,15 +230,15 @@ static inline  void grin_handle_call(target_ulong pc,
 	target_ulong buf0,buf1;
 	int i = 0;
 	char c;
-	if(coarsecfi_enabled || finecfi_enabled){
-		if((pfile=fopen(cpath_buff,"r"))==NULL){
+	if(coarsecfi_enabled){
+		if((pfile=fopen("/home/sonny","r"))==NULL){
 			printf("Read file failed!\n");
 			printf("** File path should less than 100 bytes.\n"
 					"** File path doesn't exist.\n");
 			exit(0);
 		}
 	}
-	while(coarsecfi_enabled || finecfi_enabled)
+	while(coarsecfi_enabled)
 	{
 		fgets(bufLine,30,pfile);
 		for(i=0,str1=bufLine;i<2;i++,str1=NULL){
@@ -276,7 +273,7 @@ nextline:
 		continue;
 	}
 
-	if(coarsecfi_enabled || finecfi_enabled){
+	if(coarsecfi_enabled){
 		fclose(pfile);
 		if(dcount<=5 && calladdr_of<0x4000000000){
 			fprintf(stderr,"\nGadget code icount: %d!\n",dcount);
@@ -293,10 +290,7 @@ nextline:
 		}
 	}
 	else{
-#if !NOSTDERR
-	fprintf(stderr,"CALL d: %#lx  s: %#lx icount: %ld   beside addr: %#lx\n",
-												pc,calladdr_of,dcount,calladdr_next);
-#endif
+	fprintf(stderr,"CALL d: %#lx  s: %#lx icount: %ld   beside addr: %#lx\n",pc,calladdr_of,dcount,calladdr_next);
 	}
     dcount = 0;
 }
@@ -313,7 +307,7 @@ static inline void grin_handle_ret(target_ulong pc,target_ulong retaddr_of)
 	char c;
 
 	if(coarsecfi_enabled){
-		if((pfile=fopen(rpath_buff,"r"))==NULL){
+		if((pfile=fopen("/home/sonny","r"))==NULL){
 			printf("Read file failed!\n");
 			printf("** File path should less than 100 bytes."
 					"\n** File path doesn't exist.\n");
@@ -370,10 +364,7 @@ nextline:
 		}
 	}
 	else{
-#if !NOSTDERR
-	fprintf(stderr,"RET  d: %#lx  s: %#lx icount: %ld\n",
-													pc,retaddr_of,dcount);
-#endif
+	fprintf(stderr,"RET  d: %#lx  s: %#lx icount: %ld\n",pc,retaddr_of,dcount);
 	}
     dcount = 0;
 }
@@ -444,16 +435,16 @@ static inline tcg_target_ulong cpu_tb_exec(CPUState *cpu, TranslationBlock *itb)
     }
 
     /* QEMU-HOMEWORK, MONITOR JMP module */
-        if(grin_jmp&&itb->JmpFlagM){
+        if(coarsecfi_enabled&&itb->JmpFlagM){
 	    grin_handle_jmp(tmpcpu->env.eip,itb->jmp_addr);
         }
 
     /* QEMU-HOMEWORK, MONITOR CALL module */
-        if (grin_call&&itb->CallFlagM){
+        if (coarsecfi_enabled&&itb->CallFlagM){
             grin_handle_call(tmpcpu->env.eip,itb->call_addr,itb->callnext_addr);
         }
         /* QEMU-HOMEWORK, MONITOR RET module */
-        if (grin_ret&&itb->RetFlagM){
+        if (coarsecfi_enabled&&itb->RetFlagM){
             grin_handle_ret(tmpcpu->env.eip,itb->ret_addr);
         }
 
