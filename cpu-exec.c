@@ -150,7 +150,7 @@ static inline void grin_handle_jmp(target_ulong pc,target_ulong jmpaddr_of)
 	char c;
 
 	if(coarsecfi_enabled){
-		if((pfile=fopen("/home/sonny","r"))==NULL){
+		if((pfile=fopen("/home/sonny/rop_result/vul.func","r"))==NULL){
 			printf("Read file failed!\n");
 			printf("** File path should less than 100 bytes.\n"
 					"** File path doesn't exist.\n");
@@ -231,7 +231,7 @@ static inline  void grin_handle_call(target_ulong pc,
 	int i = 0;
 	char c;
 	if(coarsecfi_enabled){
-		if((pfile=fopen("/home/sonny","r"))==NULL){
+		if((pfile=fopen("/home/sonny/rop_result/vul.func","r"))==NULL){
 			printf("Read file failed!\n");
 			printf("** File path should less than 100 bytes.\n"
 					"** File path doesn't exist.\n");
@@ -307,7 +307,7 @@ static inline void grin_handle_ret(target_ulong pc,target_ulong retaddr_of)
 	char c;
 
 	if(coarsecfi_enabled){
-		if((pfile=fopen("/home/sonny","r"))==NULL){
+		if((pfile=fopen("/home/sonny/rop_result/vul.call","r"))==NULL){
 			printf("Read file failed!\n");
 			printf("** File path should less than 100 bytes."
 					"\n** File path doesn't exist.\n");
