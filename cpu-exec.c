@@ -42,9 +42,6 @@ typedef struct SyncClocks {
     int64_t realtime_clock;
 } SyncClocks;
 
-/*** QEMU-HOMEWROK, Monitoring instruction ordinary variable*/
-static int GadgetLink = 0;
-long dcount = 0;
 
 #if !defined(CONFIG_USER_ONLY)
 /* Allow the guest to have a max 3ms advance.
@@ -139,234 +136,33 @@ static void init_delay_params(SyncClocks *sc, const CPUState *cpu)
 
 /* QEMU-HOMEWORK function module
  * MONITOR JMP module */
-static inline void grin_handle_jmp(target_ulong pc,target_ulong jmpaddr_of)
+static inline void grin_handle_jmp()
 {
-	FILE * pfile = NULL;
-	char *token,*str1;
-	char bufLine[30];
-	char bufParser[2][20];
-	target_ulong buf0,buf1;
-	int i = 0;
-	char c;
-
-	if(coarsecfi_enabled){
-		if((pfile=fopen("/home/sonny/rop_result/vul.func","r"))==NULL){
-			printf("Read file failed!\n");
-			printf("** File path should less than 100 bytes.\n"
-					"** File path doesn't exist.\n");
-			exit(0);
-		}
-	}
-	while(coarsecfi_enabled )
-	{
-		fgets(bufLine,30,pfile);
-		for(i=0,str1=bufLine;i<2;i++,str1=NULL){
-			if(bufLine[0] == '#'){
-				goto nextline;
-			}
-			token = strtok(str1,"\t");
-			strcpy(bufParser[i],token);
-			//if(token==NULL){break;}
-		}
-		if(coarsecfi_enabled){
-			//printf("%s---%s\n",bufParser[0],bufParser[1]);
-			buf0 = strtol(bufParser[0],NULL,16);
-			buf1 = strtol(bufParser[1],NULL,10);
-			/* Coarse-grained CFI */
-			if(pc==buf0){
-				//printf("CFG have jmp to function head!\n");
-				break;
-			}
-			if((pc>buf0)&&((jmpaddr_of-buf0)<buf1)&&((pc-buf0)<buf1))
-			{/* Judge jmp dest is belong to function-self internal */
-				//printf("CFG have jmp to function internal!\n");
-				break;
-			}
-		}
-		c = getc(pfile);
-		fseek(pfile,-1L,1);
-		if(c=='\n'|| c==EOF){
-			if(pc<0x4000000000){
-				fprintf(stderr,"Dynamic execute result:\n"
-							"Program is atttttttttacked _(:_l <)_\n");
-				fprintf(stderr,"JMP No data! \n"
-						"Dest: %lx \nSrc: %lx\n",pc,jmpaddr_of);
-				exit(0);
-			}
-			break;
-		}
-nextline:
-		continue;
-	}
-	if(coarsecfi_enabled){
-		fclose(pfile);
-		if(dcount<=5 && jmpaddr_of<0x4000000000){
-			fprintf(stderr,"\nGadget code icount: %d!\n",dcount);
-			fprintf(stderr,"JMP ID: %d\ndest: %#lx \nsrc: %#lx\n",GadgetLink-1,pc,jmpaddr_of);
-		}
-		/* Judge as gadget chain*/
-		/* Don't consider libc's addr */
-		if(GadgetLink == 6 && jmpaddr_of<0x4000000000){
-			fprintf(stderr,"\nFormed a gadget chain!\n"
-						"Program may be atttttttttacked!\n");
-			GadgetLink = 0;
-			exit(0);
-		}
-	}
-	else{
-	fprintf(stderr,"JMP  d: %#lx  s: %#lx icount: %ld\n",pc,jmpaddr_of,dcount);
-	}
-    dcount = 0;
+	/******************************
+	 *
+	 *           TODO.....
+	 *
+	 ******************************/
 }
 /* QEMU-HOMEWORK function module
  * MONITOR CALL module */
-static inline  void grin_handle_call(target_ulong pc,
-		target_ulong calladdr_of,target_ulong calladdr_next)
+static inline  void grin_handle_call()
 {
-	FILE * pfile = NULL;
-	char *token,*str1;
-	char bufLine[100];
-	char bufParser[2][20];
-	target_ulong buf0,buf1;
-	int i = 0;
-	char c;
-	if(coarsecfi_enabled){
-		if((pfile=fopen("/home/sonny/rop_result/vul.func","r"))==NULL){
-			printf("Read file failed!\n");
-			printf("** File path should less than 100 bytes.\n"
-					"** File path doesn't exist.\n");
-			exit(0);
-		}
-	}
-	while(coarsecfi_enabled)
-	{
-		fgets(bufLine,30,pfile);
-		for(i=0,str1=bufLine;i<2;i++,str1=NULL){
-			if(bufLine[0] == '#'){
-				goto nextline;
-			}
-			token = strtok(str1,"\t");
-			strcpy(bufParser[i],token);
-		}
-		if(coarsecfi_enabled){
-			//printf("%s---%s\n",bufParser[0],bufParser[1]);
-			buf0 = strtol(bufParser[0],NULL,16);
-			buf1 = strtol(bufParser[1],NULL,10);
-			/* Coarse-grained CFI */
-			if(pc==buf0){
-				//printf("ret return to call next address!\n");
-				break;
-			}
-		}
-		c = getc(pfile);
-		fseek(pfile,-1L,1);
-		if(c=='\n'|| c==EOF){
-			if(pc<0x4000000000){
-				fprintf(stderr,"Dynamic execute result:\n"
-						"Program is atttttttttacked _(:_l <)_\n");
-				fprintf(stderr,"CALL No data! \n Dest: %lx Src: %lx\n",pc,calladdr_of);
-				exit(0);
-			}
-			break;
-		}
-nextline:
-		continue;
-	}
-
-	if(coarsecfi_enabled){
-		fclose(pfile);
-		if(dcount<=5 && calladdr_of<0x4000000000){
-			fprintf(stderr,"\nGadget code icount: %d!\n",dcount);
-			fprintf(stderr,"CALL ID: %d\ndest: %#lx \nsrc: %#lx beside addr: %#lx\n",
-									GadgetLink-1,pc,calladdr_of,calladdr_next);
-		}
-		/* Judge as gadget chain*/
-		/* Don't consider libc's addr */
-		if(GadgetLink == 6 && calladdr_of<0x4000000000){
-			fprintf(stderr,"\nFormed a gadget chain!\n");
-			fprintf(stderr,"Program may be atttttttttacked!\n");
-			GadgetLink = 0;
-			exit(0);
-		}
-	}
-	else{
-	fprintf(stderr,"CALL d: %#lx  s: %#lx icount: %ld   beside addr: %#lx\n",pc,calladdr_of,dcount,calladdr_next);
-	}
-    dcount = 0;
+	/******************************
+	 *
+	 *           TODO.....
+	 *
+	 ******************************/	
 }
 /* QEMU-HOMEWORK function module
  * MONITOR RET module */
-static inline void grin_handle_ret(target_ulong pc,target_ulong retaddr_of)
+static inline void grin_handle_ret()
 {
-	FILE * pfile = NULL;
-	char *token,*str1;
-	char bufLine[100];
-	char bufParser[2][20];
-	target_ulong buf0,buf1;
-	int i = 0;
-	char c;
-
-	if(coarsecfi_enabled){
-		if((pfile=fopen("/home/sonny/rop_result/vul.call","r"))==NULL){
-			printf("Read file failed!\n");
-			printf("** File path should less than 100 bytes."
-					"\n** File path doesn't exist.\n");
-			exit(0);
-		}
-	}
-	while(coarsecfi_enabled)
-	{
-		fgets(bufLine,100,pfile);
-		for(i=0,str1=bufLine;i<2;i++,str1=NULL){
-			if(bufLine[0] == '#'){
-				goto nextline;
-			}
-			token = strtok(str1,"\t");
-			strcpy(bufParser[i],token);
-		}
-		if(coarsecfi_enabled){
-			//printf("%s---%s\n",bufParser[0],bufParser[1]);
-			/* Coarse-grained CFI */
-			buf1 = strtol(bufParser[1],NULL,16);
-			if(pc==buf1){
-				//printf("ret return to call next address!\n");
-				break;
-			}
-		}
-		c = getc(pfile);
-		fseek(pfile,-1L,1);
-		if(c=='\n'|| c==EOF){
-			if(pc<0x4000000000){
-				fprintf(stderr,"Dynamic execute result:\n"
-						"Program is atttttttttacked _(:_l <)_\n");
-				fprintf(stderr,"RET No data! \n Dest: %lx Src: %lx\n",pc,retaddr_of);
-				exit(0);
-			}
-			break;
-		}
-nextline:
-		continue;
-	}
-
-	if(coarsecfi_enabled){
-		fclose(pfile);
-		if(dcount<=5 && retaddr_of<0x4000000000){
-			fprintf(stderr,"\nGadget code icount: %d!\n",dcount);
-			fprintf(stderr,"RET ID: %d\n dest: %#lx \n src: %#lx \n",GadgetLink-1,pc,retaddr_of);
-		}
-		/* Judge as gadget chain*/
-		/* Don't consider libc's addr */
-		if(GadgetLink == 6 && retaddr_of<0x4000000000){
-			fprintf(stderr,"\nFormed a gadget chain!\n");
-			fprintf(stderr,"Program may be atttttttttacked!\n");
-			GadgetLink = 0;
-			exit(0);
-		}
-	}
-	else{
-	fprintf(stderr,"RET  d: %#lx  s: %#lx icount: %ld\n",pc,retaddr_of,dcount);
-	}
-    dcount = 0;
+	/******************************
+	 *
+	 *           TODO.....
+	 *
+	 ******************************/
 }
 
 /* Execute a TB, and fix up the CPU state afterwards if necessary */
@@ -434,18 +230,21 @@ static inline tcg_target_ulong cpu_tb_exec(CPUState *cpu, TranslationBlock *itb)
         cpu->tcg_exit_req = 0;
     }
 
+    /* Hint: In this function, tmpcpu->env.eip 
+     * has pointed to next TB address. (jmp to/ret to/call to TB address) 
+     * Please specify arguements for grin_handle_* function.	         */
     /* QEMU-HOMEWORK, MONITOR JMP module */
         if(coarsecfi_enabled&&itb->JmpFlagM){
-	    grin_handle_jmp(tmpcpu->env.eip,itb->jmp_addr);
+	    grin_handle_jmp();
         }
 
     /* QEMU-HOMEWORK, MONITOR CALL module */
         if (coarsecfi_enabled&&itb->CallFlagM){
-            grin_handle_call(tmpcpu->env.eip,itb->call_addr,itb->callnext_addr);
+            grin_handle_call();
         }
         /* QEMU-HOMEWORK, MONITOR RET module */
         if (coarsecfi_enabled&&itb->RetFlagM){
-            grin_handle_ret(tmpcpu->env.eip,itb->ret_addr);
+            grin_handle_ret();
         }
 
     return ret;
@@ -877,13 +676,6 @@ int cpu_exec(CPUState *cpu)
             for(;;) {
                 cpu_handle_interrupt(cpu, &last_tb);
                 tb = tb_find_fast(cpu, &last_tb, tb_exit);
-
-		/* QEMU-HOMEWORK, caculate gadget chain and total number of instruction*/
-		dcount += tb->icount;
-		if(!(tb->RetFlagM||tb->CallFlagM||tb->JmpFlagM)){
-                	GadgetLink = 0;
-                }
-                GadgetLink = tb->RetFlagM | tb->CallFlagM | tb->JmpFlagM + GadgetLink;
 
                 cpu_loop_exec_tb(cpu, tb, &last_tb, &tb_exit, &sc);
                 /* Try to align the host and virtual clocks
