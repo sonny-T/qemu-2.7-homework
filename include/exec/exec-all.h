@@ -262,6 +262,20 @@ struct TranslationBlock {
      */
     uintptr_t jmp_list_next[2];
     uintptr_t jmp_list_first;
+
+    /* QEMU-HOMEWORK CFI-target, MONITOR JMP module */
+    int JmpFlagM;
+    target_ulong jmp_addr;
+
+    /* QEMU-HOMEWORK CFI-target, MONITOR CALL module */
+    int CallFlagM;
+    target_ulong call_addr;
+    target_ulong callnext_addr;
+
+    /* QEMU-HOMEWORK CFI-target, MONITOR RET module */
+    int RetFlagM;
+    target_ulong ret_addr;
+
 };
 
 void tb_free(TranslationBlock *tb);
@@ -414,6 +428,9 @@ bool memory_region_is_unassigned(MemoryRegion *mr);
 
 /* vl.c */
 extern int singlestep;
+
+/* QEMU-HOMEWORK CFI-target */
+extern int coarsecfi_enabled;
 
 /* cpu-exec.c, accessed with atomic_mb_read/atomic_mb_set */
 extern CPUState *tcg_current_cpu;

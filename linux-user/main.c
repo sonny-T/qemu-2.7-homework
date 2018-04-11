@@ -49,6 +49,9 @@ unsigned long mmap_min_addr;
 unsigned long guest_base;
 int have_guest_base;
 
+/* QEMU-HOMEWORK CFI-target, command line options */
+int coarsecfi_enabled;
+
 #define EXCP_DUMP(env, fmt, ...)                                        \
 do {                                                                    \
     CPUState *cs = ENV_GET_CPU(env);                                    \
@@ -4010,6 +4013,11 @@ static void handle_arg_trace(const char *arg)
     g_free(trace_file);
     trace_file = trace_opt_parse(arg);
 }
+/* QEMU-HOMEWORK CFI-target */
+static void handle_COARSE_CFI_enable(const char *arg)
+{
+	coarsecfi_enabled = 1;
+}
 
 struct qemu_argument {
     const char *argv;
@@ -4062,6 +4070,8 @@ static const struct qemu_argument arg_table[] = {
      "",           "[[enable=]<pattern>][,events=<file>][,file=<file>]"},
     {"version",    "QEMU_VERSION",     false, handle_arg_version,
      "",           "display version information and exit"},
+    {"enable-coarse-CFI",    "",     false, handle_COARSE_CFI_enable,
+     "",    "enable Coarse-grained CFI mechanism"},
     {NULL, NULL, false, NULL, NULL, NULL}
 };
 
